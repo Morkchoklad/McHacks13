@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gemini Item Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
+        .image-container { margin-top: 20px; }
+        #sighting-image { max-width: 90%; max-height: 400px; border: 2px solid #333; display: none; margin: 0 auto; }
+        .controls { margin: 20px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Where is my stuff?</h2>
+    <div class="controls">
+        <button onclick="findItem('keys')">Keys</button>
+        <button onclick="findItem('glasses')">Glasses</button>
+        <button onclick="findItem('phone')">Phone</button>
+    </div>
+    <div class="image-container">
+        <img id="sighting-image" src="" alt="Last seen location">
+    </div>
+    <p id="status-text">Select an item...</p>
+    <script>
+        async function findItem(name) {
+            const statusText = document.getElementById('status-text');
+            statusText.innerText = "Searching database...";
+            
+            try {
+                const response = await fetch(`/api/locate/${name}/`);
+                const result = await response.json();
+
+                if (result.status === "found" && result.data.length > 0) {
+                    const img = document.getElementById('sighting-image');
+                    img.src = result.data[0].image_url;
+                    img.style.display = "block";
+
+                    const date = new Date(result.data[0].timestamp);
+                    statusText.innerText = `Found ${name}! Last seen: ${date.toLocaleString()}`;
+                } else {
+                    document.getElementById('sighting-image').style.display = "none";
+                    statusText.innerText = `Could not find ${name}.`;
+                }
+            } catch (e) {
+                console.error(e);
+                statusText.innerText = "Error connecting to server.";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# Folders and files to ignore in an Android project
+
+# Generated files
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Build folder
+/build
+
+# Local properties file
+local.properties
+
+# IDE files
+.idea/
+*.iml
+.gradle
+
+# Heap dump files
+*.hprof
+
+# Secrets file
+/secrets.properties
+
+# Emulator captures
+captures/
+.cxx/
